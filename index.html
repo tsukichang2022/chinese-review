@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>華語複習 — 禮貌・稱呼・興趣喜好</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --red:#d94f3d;
+  --red-light:#f5ebe9;
+  --ink:#1c1a18;
+  --mid:#5a5550;
+  --muted:#9a9590;
+  --paper:#fdfaf5;
+  --warm:#f5f0e8;
+  --border:#e8e0d0;
+  --green:#3a8c5c;
+  --green-light:#eaf4ee;
+  --gold:#c08020;
+  --gold-light:#fdf5e0;
+}
+
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Noto Sans TC',sans-serif;
+  font-weight:300;
+  min-height:100vh;
+}
+
+/* ── Header ── */
+header{
+  background:var(--red);
+  color:#fff;
+  padding:32px 24px 24px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:'華語';
+  position:absolute;
+  font-family:'Noto Serif TC',serif;
+  font-size:160px;
+  font-weight:700;
+  color:rgba(255,255,255,.06);
+  top:-20px;left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  pointer-events:none;
+}
+.header-date{font-size:11px;letter-spacing:3px;opacity:.7;margin-bottom:8px;text-transform:uppercase}
+header h1{font-family:'Noto Serif TC',serif;font-size:26px;font-weight:700;letter-spacing:4px;margin-bottom:6px}
+header p{font-size:13px;opacity:.8;letter-spacing:1px}
+
+/* ── Nav tabs ── */
+nav{
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  overflow-x:auto;
+  scrollbar-width:none;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+nav::-webkit-scrollbar{display:none}
+.tab{
+  flex-shrink:0;
+  padding:14px 20px;
+  font-size:13px;
+  letter-spacing:1px;
+  color:var(--muted);
+  cursor:pointer;
+  border-bottom:3px solid transparent;
+  transition:all .2s;
+  white-space:nowrap;
+  font-weight:400;
+}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--red);border-bottom-color:var(--red);font-weight:500}
+
+/* ── Sections ── */
+.section{display:none;padding:28px 20px;max-width:780px;margin:0 auto;animation:fadeIn .3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.section-label{
+  font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--red);font-weight:500;margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── Tone banner ── */
+.tone-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;
+}
+.tone-card{
+  background:var(--warm);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px 12px;
+  text-align:center;
+}
+.tone-num{font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:6px}
+.tone-mark{font-size:28px;color:var(--red)}
+.tone-desc{font-size:12px;color:var(--mid);margin-top:4px;line-height:1.5}
+
+.note-box{
+  background:var(--gold-light);
+  border:1px solid #e8d08a;
+  border-left:4px solid var(--gold);
+  border-radius:6px;
+  padding:12px 16px;
+  font-size:13px;color:var(--mid);line-height:1.8;
+  margin-bottom:20px;
+}
+.note-box strong{color:var(--gold);font-weight:500}
+
+/* ── Vowel chips ── */
+.vowel-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.vowel{
+  background:#fff;border:1px solid var(--border);
+  border-radius:20px;padding:6px 16px;
+  font-size:18px;font-weight:400;color:var(--ink);
+}
+
+/* ── Phrase pairs ── */
+.phrase-list{display:flex;flex-direction:column;gap:14px}
+.phrase-pair{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:8px;
+  align-items:center;
+}
+.phrase-say{font-size:15px;color:var(--ink);line-height:1.6}
+.phrase-arrow{font-size:18px;color:var(--muted)}
+.phrase-reply{font-size:14px;color:var(--green);line-height:1.6}
+.phrase-pinyin{font-size:11px;color:var(--muted);margin-top:2px;font-style:italic}
+
+/* ── Titles grid ── */
+.title-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.title-chip{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px 16px;
+  text-align:center;
+}
+.title-chip .cn{font-size:16px}
+.title-chip .blank{
+  color:var(--red);font-size:16px;
+  border-bottom:2px solid var(--red);
+  display:inline-block;min-width:20px;
+}
+.title-chip .py{font-size:10px;color:var(--muted);margin-top:2px;font-style:italic}
+
+/* ── Q&A practice ── */
+.qa-block{
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:20px;margin-bottom:14px;
+}
+.qa-q{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:10px}
+.qa-q .tag{
+  font-size:10px;letter-spacing:1px;background:var(--red);color:#fff;
+  border-radius:4px;padding:2px 8px;margin-right:8px;font-weight:400;
+}
+.qa-a{
+  font-size:13px;color:var(--green);
+  border-top:1px dashed var(--border);padding-top:10px;line-height:1.8;
+}
+.qa-a .example{
+  background:var(--green-light);border-radius:6px;
+  padding:6px 10px;margin-top:6px;font-size:13px;
+}
+
+/* ── Vocab cards (interests) ── */
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:24px}
+.vocab-card{
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:14px 10px;text-align:center;cursor:pointer;
+  transition:all .15s;
+}
+.vocab-card:hover{border-color:var(--red);transform:translateY(-2px)}
+.vocab-card .emoji{font-size:24px;margin-bottom:6px}
+.vocab-card .cn{font-size:16px;color:var(--ink)}
+.vocab-card .py{font-size:11px;color:var(--muted);margin-top:2px;font-style:italic}
+
+/* ── Grammar ── */
+.grammar-box{
+  background:var(--warm);border:1px solid var(--border);border-radius:10px;
+  padding:20px;margin-bottom:16px;
+}
+.grammar-title{font-size:12px;letter-spacing:2px;color:var(--red);margin-bottom:12px;font-weight:500}
+.grammar-pattern{
+  font-size:20px;font-family:'Noto Serif TC',serif;
+  color:var(--ink);margin-bottom:12px;letter-spacing:2px;
+}
+.grammar-pattern .slot{
+  color:var(--red);border-bottom:2px solid var(--red);
+  font-size:16px;padding:0 4px;
+}
+.grammar-examples{list-style:none;display:flex;flex-direction:column;gap:6px}
+.grammar-examples li{
+  font-size:13px;color:var(--mid);padding-left:14px;
+  position:relative;line-height:1.8;
+}
+.grammar-examples li::before{content:'→';position:absolute;left:0;color:var(--red);font-size:12px}
+
+/* ── Quiz ── */
+.quiz-card{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:24px;text-align:center;margin-bottom:16px;
+}
+.quiz-q{font-size:18px;color:var(--ink);margin-bottom:20px;line-height:1.7}
+.quiz-options{display:flex;flex-direction:column;gap:10px}
+.quiz-btn{
+  background:var(--warm);border:1px solid var(--border);border-radius:8px;
+  padding:12px 16px;font-size:14px;cursor:pointer;
+  font-family:'Noto Sans TC',sans-serif;
+  transition:all .15s;text-align:left;color:var(--ink);
+}
+.quiz-btn:hover{border-color:var(--red)}
+.quiz-btn.correct{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.quiz-btn.wrong{background:#fcecea;border-color:var(--red);color:var(--red)}
+.quiz-result{font-size:13px;margin-top:14px;color:var(--mid);min-height:20px}
+.quiz-next{
+  margin-top:16px;background:var(--red);color:#fff;border:none;
+  border-radius:8px;padding:10px 24px;font-size:13px;cursor:pointer;
+  font-family:'Noto Sans TC',sans-serif;display:none;
+}
+.quiz-score{
+  background:var(--gold-light);border:1px solid #e8d08a;border-radius:10px;
+  padding:16px;text-align:center;font-size:15px;color:var(--gold);
+  margin-bottom:16px;display:none;
+}
+.quiz-restart{
+  background:var(--red);color:#fff;border:none;border-radius:8px;
+  padding:10px 24px;font-size:13px;cursor:pointer;
+  font-family:'Noto Sans TC',sans-serif;margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-date">2025 / 5 / 22 · 時代華語 p.45, 47-49</div>
+  <h1>禮貌・稱呼・興趣喜好</h1>
+  <p>lǐ mào · chēng hū · xìng qù xǐ hào</p>
+</header>
+
+<nav>
+  <div class="tab active" onclick="show('tones')">🎵 聲調</div>
+  <div class="tab" onclick="show('polite')">🙏 禮貌用語</div>
+  <div class="tab" onclick="show('titles')">👤 稱呼</div>
+  <div class="tab" onclick="show('vocab')">❤️ 興趣詞語</div>
+  <div class="tab" onclick="show('grammar')">📐 句型</div>
+  <div class="tab" onclick="show('quiz')">✏️ 小測驗</div>
+</nav>
+
+<!-- ══ TONES ══ -->
+<div class="section active" id="tones">
+  <div class="section-label">拼音母音</div>
+  <div class="vowel-row">
+    <div class="vowel">a</div><div class="vowel">o</div>
+    <div class="vowel">e</div><div class="vowel">i</div>
+    <div class="vowel">u</div><div class="vowel">ü (yu)</div>
+    <div class="vowel">er</div>
+  </div>
+
+  <div class="section-label">四個聲調</div>
+  <div class="tone-row">
+    <div class="tone-card">
+      <div class="tone-num">第一聲</div>
+      <div class="tone-mark">ā</div>
+      <div class="tone-desc">高平<br>—</div>
+    </div>
+    <div class="tone-card">
+      <div class="tone-num">第二聲</div>
+      <div class="tone-mark">á</div>
+      <div class="tone-desc">上揚<br>↗</div>
+    </div>
+    <div class="tone-card">
+      <div class="tone-num">第三聲</div>
+      <div class="tone-mark">ǎ</div>
+      <div class="tone-desc">低短<br>↘↗</div>
+    </div>
+    <div class="tone-card">
+      <div class="tone-num">第四聲</div>
+      <div class="tone-mark">à</div>
+      <div class="tone-desc">用力降<br>↘</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    ⚠️ <strong>注意：3聲 + 2聲</strong> — 兩個三聲連在一起時，前面那個三聲讀成二聲。<br>
+    例：你好 <em>nǐ hǎo</em> → 實際唸 <em>níhǎo</em>
+  </div>
+
+  <div class="section-label">作業提醒</div>
+  <div class="note-box" style="border-left-color:var(--red);background:var(--red-light)">
+    📝 <strong>作業</strong>：20個聲調組合 ＋ 自我介紹、稱呼
+  </div>
+</div>
+
+<!-- ══ POLITE ══ -->
+<div class="section" id="polite">
+  <div class="section-label">禮貌用語 2-2</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:16px">點擊每一組查看說法與回應</p>
+  <div class="phrase-list">
+
+    <div class="phrase-pair">
+      <div>
+        <div class="phrase-say">這是一點小意思。</div>
+        <div class="phrase-pinyin">Zhè shì yì diǎn xiǎo yì si.</div>
+      </div>
+      <div class="phrase-arrow">→</div>
+      <div>
+        <div class="phrase-reply">你太客氣了！</div>
+        <div class="phrase-pinyin">Nǐ tài kè qì le!</div>
+      </div>
+    </div>
+
+    <div class="phrase-pair">
+      <div>
+        <div class="phrase-say">謝謝！謝謝！<br>謝謝你哦！</div>
+        <div class="phrase-pinyin">Xiè xie! / Xiè xie nǐ ō!</div>
+      </div>
+      <div class="phrase-arrow">→</div>
+      <div>
+        <div class="phrase-reply">不會（哦）！<br>不謝！不用客氣！</div>
+        <div class="phrase-pinyin">Bú huì! / Bú xiè! / Bú yòng kè qì!</div>
+      </div>
+    </div>
+
+    <div class="phrase-pair">
+      <div>
+        <div class="phrase-say">不好意思。</div>
+        <div class="phrase-pinyin">Bù hǎo yì si.</div>
+      </div>
+      <div class="phrase-arrow">→</div>
+      <div>
+        <div class="phrase-reply">不會（哦）！</div>
+        <div class="phrase-pinyin">Bú huì!</div>
+      </div>
+    </div>
+
+    <div class="phrase-pair">
+      <div>
+        <div class="phrase-say">麻煩你了。</div>
+        <div class="phrase-pinyin">Má fán nǐ le.</div>
+      </div>
+      <div class="phrase-arrow">→</div>
+      <div>
+        <div class="phrase-reply">不會（哦）！</div>
+        <div class="phrase-pinyin">Bú huì!</div>
+      </div>
+    </div>
+
+    <div class="phrase-pair">
+      <div>
+        <div class="phrase-say">別客氣！</div>
+        <div class="phrase-pinyin">Bié kè qì!</div>
+      </div>
+      <div class="phrase-arrow">→</div>
+      <div>
+        <div class="phrase-reply">不用了！不用了！謝謝！</div>
+        <div class="phrase-pinyin">Bú yòng le! Xiè xie!</div>
+      </div>
+    </div>
+
+    <div class="phrase-pair">
+      <div>
+        <div class="phrase-say">辛苦了！</div>
+        <div class="phrase-pinyin">Xīn kǔ le!</div>
+      </div>
+      <div class="phrase-arrow">→</div>
+      <div>
+        <div class="phrase-reply">辛苦了！ / 不會。</div>
+        <div class="phrase-pinyin">Xīn kǔ le! / Bú huì.</div>
+      </div>
+    </div>
+
+    <div class="phrase-pair" style="grid-template-columns:1fr">
+      <div>
+        <div class="phrase-say">請多多指教。</div>
+        <div class="phrase-pinyin">Qǐng duō duō zhǐ jiào.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ TITLES ══ -->
+<div class="section" id="titles">
+  <div class="section-label">詢問姓名 / 稱呼</div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">
+    <div class="qa-block">
+      <div class="qa-q"><span class="tag">對下</span>你叫什麼名字？</div>
+      <div class="qa-a">nǐ jiào shén me míng zi?</div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q"><span class="tag">服務業</span>請問，您貴姓？</div>
+      <div class="qa-a">qǐng wèn, nín guì xìng?</div>
+    </div>
+    <div class="qa-block" style="border-color:var(--red)">
+      <div class="qa-q"><span class="tag">★ 最常用</span>你 / 您怎麼稱呼？</div>
+      <div class="qa-a">
+        nǐ / nín zěn me chēng hū?
+        <div class="example">A：我叫～，請叫我～<br><em>Wǒ jiào~, qǐng jiào wǒ~</em></div>
+      </div>
+    </div>
+    <div class="qa-block">
+      <div class="qa-q">你是做什麼的？</div>
+      <div class="qa-a">
+        qǐng wèn nǐ shì zuò shén me de?
+        <div class="example">A：我是日語合作夥伴 / 老師 / 高中老師</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">問候語</div>
+  <div class="vocab-grid" style="margin-bottom:24px">
+    <div class="vocab-card"><div class="emoji">🌅</div><div class="cn">早安（早～）</div><div class="py">zǎo ān</div></div>
+    <div class="vocab-card"><div class="emoji">☀️</div><div class="cn">午安</div><div class="py">wǔ ān</div></div>
+    <div class="vocab-card"><div class="emoji">🌙</div><div class="cn">晚安</div><div class="py">wǎn ān</div></div>
+  </div>
+
+  <div class="section-label">職稱稱謂</div>
+  <div class="title-grid">
+    <div class="title-chip"><div class="cn">校長</div><div class="py">xiào zhǎng</div></div>
+    <div class="title-chip"><div class="cn"><span class="blank">○</span>老師</div><div class="py">lǎo shī</div></div>
+    <div class="title-chip"><div class="cn">（<span class="blank">○</span>）主任</div><div class="py">zhǔ rèn</div></div>
+    <div class="title-chip"><div class="cn">（<span class="blank">○</span>）先生</div><div class="py">xiān shēng</div></div>
+    <div class="title-chip"><div class="cn">（<span class="blank">○</span>）小姐</div><div class="py">xiǎo jiě</div></div>
+    <div class="title-chip"><div class="cn">阿姨</div><div class="py">ā yí</div></div>
+    <div class="title-chip"><div class="cn"><span class="blank">○</span>太太</div><div class="py">tài tai</div></div>
+    <div class="title-chip"><div class="cn"><span class="blank">○</span>媽媽</div><div class="py">mā ma</div></div>
+    <div class="title-chip"><div class="cn">老闆</div><div class="py">lǎo bǎn</div></div>
+    <div class="title-chip"><div class="cn">老闆娘</div><div class="py">lǎo bǎn niáng</div></div>
+  </div>
+  <div class="note-box">💡 <strong>○</strong> 代表加上姓氏，例：「王老師」、「陳先生」</div>
+</div>
+
+<!-- ══ VOCAB ══ -->
+<div class="section" id="vocab">
+  <div class="section-label">興趣愛好詞語</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:16px">點擊卡片翻轉看拼音</p>
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">😊</div><div class="cn">喜歡</div><div class="py">xǐ huān</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">❤️</div><div class="cn">愛</div><div class="py">ài</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🐕</div><div class="cn">小狗</div><div class="py">xiǎo gǒu</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🐱</div><div class="cn">小貓</div><div class="py">xiǎo māo</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🍜</div><div class="cn">拉麵</div><div class="py">lā miàn</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🍵</div><div class="cn">茶</div><div class="py">chá</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">☕</div><div class="cn">咖啡</div><div class="py">kā fēi</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🍽️</div><div class="cn">吃</div><div class="py">chī</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🍎</div><div class="cn">水果</div><div class="py">shuǐ guǒ</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🍔</div><div class="cn">漢堡</div><div class="py">hàn bǎo</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🎬</div><div class="cn">看電影</div><div class="py">kàn diàn yǐng</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">📺</div><div class="cn">看電視</div><div class="py">kàn diàn shì</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">🏃</div><div class="cn">跑步</div><div class="py">pǎo bù</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">✈️</div><div class="cn">旅行</div><div class="py">lǚ xíng</div>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('flip')">
+      <div class="emoji">📷</div><div class="cn">照相</div><div class="py">zhào xiàng</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GRAMMAR ══ -->
+<div class="section" id="grammar">
+  <div class="section-label">基本句型</div>
+
+  <div class="grammar-box">
+    <div class="grammar-title">基本句</div>
+    <div class="grammar-pattern">
+      <span class="slot">S</span> + <span class="slot">V</span> + <span class="slot">O</span>
+    </div>
+    <ul class="grammar-examples">
+      <li>我喜歡咖啡。Wǒ xǐ huān kā fēi.</li>
+      <li>她愛小貓。Tā ài xiǎo māo.</li>
+    </ul>
+  </div>
+
+  <div class="grammar-box">
+    <div class="grammar-title">是非疑問句</div>
+    <div class="grammar-pattern">～嗎？→ Yes: <span class="slot">V</span> ／ No: 不 + <span class="slot">V</span></div>
+    <ul class="grammar-examples">
+      <li>你喜歡咖啡<strong>嗎</strong>？→ 喜歡 / 不喜歡。</li>
+      <li>你愛小狗<strong>嗎</strong>？→ 愛 / 不愛。</li>
+    </ul>
+  </div>
+
+  <div class="grammar-box">
+    <div class="grammar-title">省略式問句</div>
+    <div class="grammar-pattern">～<span class="slot">呢</span>？</div>
+    <ul class="grammar-examples">
+      <li>我喜歡咖啡，你<strong>呢</strong>？（你喜歡什麼？）</li>
+      <li>咦……小狗<strong>呢</strong>？（小狗在哪裡？）</li>
+    </ul>
+  </div>
+
+  <div class="grammar-box">
+    <div class="grammar-title">疑問詞問句（wh-）</div>
+    <div class="grammar-pattern">S + V + <span class="slot">什麼</span>？</div>
+    <ul class="grammar-examples">
+      <li>你喜歡<strong>什麼</strong>？</li>
+      <li>你叫<strong>什麼</strong>名字？</li>
+    </ul>
+  </div>
+
+  <div class="grammar-box">
+    <div class="grammar-title">也 / 都</div>
+    <div class="grammar-pattern">S + <span class="slot">也</span> / <span class="slot">都</span> （不）V</div>
+    <ul class="grammar-examples">
+      <li>我<strong>也</strong>喜歡咖啡。（I also like coffee.）</li>
+      <li>我們<strong>都</strong>喜歡旅行。（We all like travelling.）</li>
+      <li>他<strong>都</strong>不喜歡。（He doesn't like any of it.）</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="section" id="quiz">
+  <div class="section-label">小測驗</div>
+  <div class="quiz-score" id="quiz-score"></div>
+  <div class="quiz-card" id="quiz-card">
+    <div class="quiz-q" id="quiz-q">載入中…</div>
+    <div class="quiz-options" id="quiz-opts"></div>
+    <div class="quiz-result" id="quiz-result"></div>
+    <button class="quiz-next" id="quiz-next" onclick="nextQ()">下一題 →</button>
+  </div>
+  <button class="quiz-restart" onclick="startQuiz()" id="quiz-restart" style="display:none">重新測驗</button>
+</div>
+
+<script>
+// ── Tab switching ──
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(id==='quiz') startQuiz();
+}
+
+// ── Quiz data ──
+const questions=[
+  {q:'別人送你東西，你說「謝謝！」，對方怎麼回答？',opts:['請多多指教！','不會哦！','辛苦了！','麻煩你了！'],ans:1},
+  {q:'你不小心麻煩別人，應該說什麼？',opts:['謝謝你哦！','你太客氣了！','不好意思','辛苦了！'],ans:2},
+  {q:'「你/您怎麼稱呼？」是什麼意思？',opts:['你是做什麼的？','你叫什麼名字/怎麼稱呼？','你住在哪裡？','你幾歲？'],ans:1},
+  {q:'「我喜歡咖啡，你呢？」中「呢」的用法是？',opts:['是非問句','省略式問句','疑問詞問句','否定句'],ans:1},
+  {q:'第三聲 + 第二聲，第三聲怎麼讀？',opts:['還是三聲','變成一聲','變成二聲','不唸'],ans:2},
+  {q:'「zhào xiàng」（照相）是哪個興趣？',opts:['跑步','旅行','照相','看電影'],ans:2},
+  {q:'服務業詢問姓氏，應該用哪句？',opts:['你叫什麼名字？','請問您貴姓？','你是做什麼的？','你怎麼稱呼？'],ans:1},
+  {q:'「我們都喜歡旅行」中「都」的意思是？',opts:['也','全部','不','還是'],ans:1},
+  {q:'「是非疑問句」怎麼否定回答？',opts:['不 + V','沒有 + V','不是 + V','V + 不'],ans:0},
+  {q:'「辛苦了！」可以怎麼回答？',opts:['你太客氣了！','辛苦了！/ 不會。','不好意思！','麻煩你了！'],ans:1},
+];
+
+let qIdx=0, score=0, answered=false;
+
+function startQuiz(){
+  const shuffled=[...questions].sort(()=>Math.random()-.5);
+  window._qs=shuffled;
+  qIdx=0; score=0; answered=false;
+  document.getElementById('quiz-score').style.display='none';
+  document.getElementById('quiz-restart').style.display='none';
+  document.getElementById('quiz-card').style.display='block';
+  loadQ();
+}
+
+function loadQ(){
+  if(qIdx>=window._qs.length){
+    showScore(); return;
+  }
+  const q=window._qs[qIdx];
+  answered=false;
+  document.getElementById('quiz-q').textContent=`Q${qIdx+1}／${window._qs.length}　${q.q}`;
+  document.getElementById('quiz-result').textContent='';
+  document.getElementById('quiz-next').style.display='none';
+  const opts=document.getElementById('quiz-opts');
+  opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='quiz-btn';
+    b.textContent=o;
+    b.onclick=()=>answer(i,q.ans);
+    opts.appendChild(b);
+  });
+}
+
+function answer(chosen,correct){
+  if(answered) return;
+  answered=true;
+  const btns=document.querySelectorAll('.quiz-btn');
+  btns[chosen].classList.add(chosen===correct?'correct':'wrong');
+  btns[correct].classList.add('correct');
+  if(chosen===correct){
+    score++;
+    document.getElementById('quiz-result').textContent='✓ 答對了！';
+    document.getElementById('quiz-result').style.color='var(--green)';
+  } else {
+    document.getElementById('quiz-result').textContent='✗ 再想想看～';
+    document.getElementById('quiz-result').style.color='var(--red)';
+  }
+  document.getElementById('quiz-next').style.display='inline-block';
+}
+
+function nextQ(){
+  qIdx++;
+  loadQ();
+}
+
+function showScore(){
+  document.getElementById('quiz-card').style.display='none';
+  const s=document.getElementById('quiz-score');
+  s.style.display='block';
+  const pct=Math.round(score/window._qs.length*100);
+  const msg=pct>=80?'太棒了！🎉':pct>=60?'繼續加油！💪':'再複習一次吧 📖';
+  s.innerHTML=`<div style="font-size:28px;margin-bottom:8px">${score} / ${window._qs.length}</div><div style="font-size:14px">${msg}（${pct}%）</div>`;
+  document.getElementById('quiz-restart').style.display='inline-block';
+}
+
+startQuiz();
+</script>
+</body>
+</html>
