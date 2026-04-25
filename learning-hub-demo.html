@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Learning Hub — 華語練習</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1521;
+  --surface:#1a2235;
+  --surface2:#222d42;
+  --border:#2d3d5a;
+  --blue:#4a7fd4;
+  --blue-light:#6b9be8;
+  --blue-glow:rgba(74,127,212,0.3);
+  --green:#3db87a;
+  --green-glow:rgba(61,184,122,0.25);
+  --red:#e05555;
+  --red-glow:rgba(224,85,85,0.25);
+  --gold:#f0b429;
+  --text:#e8edf5;
+  --text-mid:#8fa3c0;
+  --text-muted:#4d6080;
+  --radius:14px;
+}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Noto Sans TC',sans-serif;
+  font-weight:300;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* ══ HOME ══ */
+#home{
+  background: radial-gradient(ellipse at 30% 20%, rgba(74,127,212,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, rgba(61,184,122,0.08) 0%, transparent 50%),
+              var(--bg);
+  padding:40px 24px;
+  align-items:center;
+}
+.home-header{text-align:center;margin-bottom:48px}
+.home-badge{
+  display:inline-block;
+  background:var(--blue-glow);
+  border:1px solid var(--blue);
+  color:var(--blue-light);
+  font-size:11px;letter-spacing:3px;
+  padding:5px 16px;border-radius:20px;
+  margin-bottom:16px;
+}
+.home-title{
+  font-family:'Noto Serif TC',serif;
+  font-size:32px;font-weight:700;
+  line-height:1.2;margin-bottom:8px;
+}
+.home-title span{color:var(--blue-light)}
+.home-sub{font-size:13px;color:var(--text-mid);letter-spacing:1px}
+
+.lesson-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  width:100%;max-width:420px;
+  margin-bottom:16px;
+}
+.lesson-label{
+  font-size:10px;letter-spacing:3px;color:var(--text-muted);
+  text-transform:uppercase;margin-bottom:10px;
+}
+.lesson-name{font-size:17px;font-weight:500;margin-bottom:4px}
+.lesson-meta{font-size:12px;color:var(--text-mid)}
+
+.modes-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;width:100%;max-width:420px;
+}
+.mode-btn{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px 16px;
+  cursor:pointer;transition:all .2s;
+  text-align:center;
+  color:var(--text);
+}
+.mode-btn:hover{
+  border-color:var(--blue);
+  background:var(--surface2);
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.mode-icon{font-size:28px;margin-bottom:8px}
+.mode-name{font-size:14px;font-weight:500;margin-bottom:4px}
+.mode-desc{font-size:11px;color:var(--text-mid)}
+
+/* ── SHARED GAME HEADER ── */
+.game-header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:14px 20px;
+  display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:50;
+}
+.back-btn{
+  background:none;border:none;color:var(--text-mid);
+  font-size:20px;cursor:pointer;padding:4px 8px;
+  border-radius:8px;transition:all .15s;
+}
+.back-btn:hover{color:var(--text);background:var(--surface2)}
+.game-title{font-size:15px;font-weight:500;flex:1}
+.progress-bar{
+  height:4px;background:var(--border);border-radius:2px;
+  flex:1;overflow:hidden;
+}
+.progress-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .4s}
+.score-badge{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--gold);font-size:12px;padding:4px 12px;border-radius:20px;
+}
+
+.game-body{padding:24px 20px;max-width:500px;margin:0 auto;width:100%;flex:1}
+
+/* ══ FLASHCARDS ══ */
+.fc-counter{text-align:center;font-size:12px;color:var(--text-muted);margin-bottom:20px;letter-spacing:2px}
+.fc-wrap{perspective:1000px;margin-bottom:24px}
+.fc-card{
+  width:100%;height:200px;
+  position:relative;transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.4,0,.2,1);
+  cursor:pointer;
+}
+.fc-card.flipped{transform:rotateY(180deg)}
+.fc-front,.fc-back{
+  position:absolute;inset:0;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  backface-visibility:hidden;
+  padding:24px;
+}
+.fc-back{transform:rotateY(180deg);background:var(--surface2);border-color:var(--blue)}
+.fc-hint{font-size:10px;letter-spacing:2px;color:var(--text-muted);margin-bottom:12px}
+.fc-char{font-family:'Noto Serif TC',serif;font-size:48px;font-weight:700;color:var(--text);margin-bottom:8px}
+.fc-pinyin{font-size:16px;color:var(--blue-light);margin-bottom:4px}
+.fc-meaning{font-size:14px;color:var(--text-mid)}
+.fc-example{font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;line-height:1.6}
+.fc-controls{display:flex;gap:12px;justify-content:center}
+.fc-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);padding:12px 28px;border-radius:12px;
+  font-size:14px;cursor:pointer;transition:all .15s;
+  font-family:'Noto Sans TC',sans-serif;
+}
+.fc-btn.prev:hover{border-color:var(--text-mid)}
+.fc-btn.next{background:var(--blue);border-color:var(--blue);color:#fff}
+.fc-btn.next:hover{background:var(--blue-light)}
+
+/* ══ MEMORY MATCH ══ */
+.mm-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:10px;margin-bottom:20px;
+}
+.mm-tile{
+  aspect-ratio:1;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;cursor:pointer;
+  transition:all .2s;
+  text-align:center;padding:6px;
+  line-height:1.3;
+  position:relative;overflow:hidden;
+}
+.mm-tile::before{
+  content:'';position:absolute;inset:0;
+  background:var(--surface2);transition:opacity .25s;
+  opacity:1;
+}
+.mm-tile.revealed::before,.mm-tile.matched::before{opacity:0}
+.mm-tile.matched{border-color:var(--green);background:rgba(61,184,122,0.1)}
+.mm-tile.wrong{border-color:var(--red);animation:shake .3s}
+.mm-tile-inner{position:relative;z-index:1}
+.mm-tile:hover:not(.matched){border-color:var(--blue);transform:scale(1.03)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+.mm-stats{display:flex;justify-content:space-between;font-size:13px;color:var(--text-mid);margin-bottom:16px}
+
+/* ══ SENTENCE BUILDER ══ */
+.sb-instruction{font-size:13px;color:var(--text-mid);margin-bottom:8px}
+.sb-prompt{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:16px;
+  font-size:14px;color:var(--text-mid);
+  margin-bottom:20px;line-height:1.7;
+}
+.sb-prompt strong{color:var(--text)}
+.sb-answer-area{
+  min-height:60px;
+  background:var(--surface);
+  border:2px dashed var(--border);
+  border-radius:12px;padding:12px;
+  display:flex;flex-wrap:wrap;gap:8px;
+  margin-bottom:16px;align-items:center;
+  transition:border-color .2s;
+}
+.sb-answer-area.has-content{border-color:var(--blue)}
+.sb-token{
+  background:var(--blue);color:#fff;
+  border-radius:8px;padding:7px 14px;
+  font-size:14px;cursor:pointer;
+  transition:all .15s;user-select:none;
+}
+.sb-token:hover{background:var(--blue-light);transform:scale(1.05)}
+.sb-token.used{opacity:.3;pointer-events:none}
+.sb-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.sb-bank-token{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);border-radius:8px;padding:7px 14px;
+  font-size:14px;cursor:pointer;transition:all .15s;user-select:none;
+}
+.sb-bank-token:hover:not(.used){border-color:var(--blue);color:var(--blue-light)}
+.sb-bank-token.used{opacity:.25;pointer-events:none}
+.sb-actions{display:flex;gap:10px}
+.sb-check{
+  background:var(--blue);color:#fff;border:none;
+  border-radius:10px;padding:12px 24px;font-size:14px;cursor:pointer;
+  font-family:'Noto Sans TC',sans-serif;flex:1;
+}
+.sb-clear{
+  background:var(--surface2);color:var(--text-mid);border:1px solid var(--border);
+  border-radius:10px;padding:12px 20px;font-size:14px;cursor:pointer;
+  font-family:'Noto Sans TC',sans-serif;
+}
+.sb-feedback{
+  border-radius:10px;padding:14px 16px;font-size:13px;
+  margin-top:12px;line-height:1.7;display:none;
+}
+.sb-feedback.correct{background:var(--green-glow);border:1px solid var(--green);color:var(--green)}
+.sb-feedback.wrong{background:var(--red-glow);border:1px solid var(--red);color:#ff8a8a}
+
+/* ══ QUIZ ══ */
+.quiz-round-badge{
+  display:inline-block;
+  background:var(--blue-glow);border:1px solid var(--blue);
+  color:var(--blue-light);font-size:10px;letter-spacing:2px;
+  padding:4px 14px;border-radius:20px;margin-bottom:16px;
+}
+.quiz-q{font-size:18px;line-height:1.6;margin-bottom:24px;font-weight:400}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.quiz-opt{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:14px 18px;
+  font-size:14px;color:var(--text);cursor:pointer;
+  transition:all .15s;text-align:left;
+  font-family:'Noto Sans TC',sans-serif;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--blue);background:var(--surface2)}
+.quiz-opt.correct{background:var(--green-glow);border-color:var(--green);color:#7de8b0}
+.quiz-opt.wrong{background:var(--red-glow);border-color:var(--red);color:#ff8a8a}
+.quiz-next{
+  background:var(--blue);color:#fff;border:none;
+  border-radius:12px;padding:13px;width:100%;font-size:14px;cursor:pointer;
+  font-family:'Noto Sans TC',sans-serif;margin-top:4px;
+  display:none;
+}
+
+/* ══ RESULT ══ */
+.result-screen{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 24px;text-align:center;
+  background:radial-gradient(ellipse at center, rgba(74,127,212,.12) 0%, transparent 70%);
+}
+.result-circle{
+  width:120px;height:120px;border-radius:50%;
+  background:var(--surface);border:3px solid var(--blue);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin-bottom:24px;
+  box-shadow:0 0 40px var(--blue-glow);
+}
+.result-score{font-size:36px;font-weight:700;color:var(--blue-light)}
+.result-total{font-size:12px;color:var(--text-muted)}
+.result-msg{font-size:18px;font-weight:500;margin-bottom:8px}
+.result-sub{font-size:13px;color:var(--text-mid);margin-bottom:32px}
+.result-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px}
+.result-retry{
+  background:var(--blue);color:#fff;border:none;
+  border-radius:12px;padding:14px;font-size:14px;cursor:pointer;
+  font-family:'Noto Sans TC',sans-serif;
+}
+.result-home{
+  background:var(--surface);color:var(--text-mid);border:1px solid var(--border);
+  border-radius:12px;padding:14px;font-size:14px;cursor:pointer;
+  font-family:'Noto Sans TC',sans-serif;
+}
+
+/* animations */
+@keyframes pop{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ HOME ══════════════════════ -->
+<div class="screen active" id="home">
+  <div class="home-header">
+    <div class="home-badge">MY LEARNING HUB</div>
+    <h1 class="home-title">華語練習<br><span>禮貌・稱呼・興趣</span></h1>
+    <p class="home-sub">時代華語 p.45, 47–49 ｜ 2025/5/22</p>
+  </div>
+
+  <div class="lesson-card">
+    <div class="lesson-label">本課教材</div>
+    <div class="lesson-name">禮貌用語 / 稱呼和職業 / 興趣愛好</div>
+    <div class="lesson-meta">詞語 15 個・句型 4 種・禮貌對話 7 組</div>
+  </div>
+
+  <div class="modes-grid">
+    <div class="mode-btn" onclick="startFlashcards()">
+      <div class="mode-icon">🃏</div>
+      <div class="mode-name">Flashcards</div>
+      <div class="mode-desc">詞語記憶卡</div>
+    </div>
+    <div class="mode-btn" onclick="startMemory()">
+      <div class="mode-icon">🧩</div>
+      <div class="mode-name">Memory Match</div>
+      <div class="mode-desc">中文配對遊戲</div>
+    </div>
+    <div class="mode-btn" onclick="startSentence()">
+      <div class="mode-icon">🔤</div>
+      <div class="mode-name">Sentence Builder</div>
+      <div class="mode-desc">句子重組練習</div>
+    </div>
+    <div class="mode-btn" onclick="startQuiz()">
+      <div class="mode-icon">📝</div>
+      <div class="mode-name">Lesson Quiz</div>
+      <div class="mode-desc">單課綜合測驗</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ FLASHCARDS ══════════════════════ -->
+<div class="screen" id="flashcards">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="game-title">🃏 Flashcards</span>
+    <div class="progress-bar"><div class="progress-fill" id="fc-progress"></div></div>
+  </div>
+  <div class="game-body">
+    <div class="fc-counter" id="fc-counter"></div>
+    <div class="fc-wrap">
+      <div class="fc-card" id="fc-card" onclick="flipCard()">
+        <div class="fc-front">
+          <div class="fc-hint">點擊翻轉</div>
+          <div class="fc-char" id="fc-char"></div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-pinyin" id="fc-pinyin"></div>
+          <div class="fc-meaning" id="fc-meaning"></div>
+          <div class="fc-example" id="fc-example"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-controls">
+      <button class="fc-btn prev" onclick="fcPrev()">← 上一張</button>
+      <button class="fc-btn next" onclick="fcNext()">下一張 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ MEMORY MATCH ══════════════════════ -->
+<div class="screen" id="memory">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="game-title">🧩 Memory Match</span>
+    <div class="score-badge" id="mm-score-badge">0 配對</div>
+  </div>
+  <div class="game-body">
+    <div class="mm-stats">
+      <span id="mm-pairs">配對：0 / 8</span>
+      <span id="mm-moves">步數：0</span>
+      <span id="mm-timer">⏱ 0s</span>
+    </div>
+    <div class="mm-grid" id="mm-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ SENTENCE BUILDER ══════════════════════ -->
+<div class="screen" id="sentence">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="game-title">🔤 Sentence Builder</span>
+    <div class="score-badge" id="sb-score-badge">0 / 0</div>
+  </div>
+  <div class="game-body">
+    <div id="sb-q-num" style="font-size:11px;color:var(--text-muted);letter-spacing:2px;margin-bottom:12px"></div>
+    <div class="sb-prompt" id="sb-prompt"></div>
+    <div class="sb-instruction">把詞語拖到正確順序 👇</div>
+    <div class="sb-answer-area" id="sb-answer"></div>
+    <div class="sb-bank" id="sb-bank"></div>
+    <div class="sb-actions">
+      <button class="sb-clear" onclick="sbClear()">清除</button>
+      <button class="sb-check" onclick="sbCheck()">確認 ✓</button>
+    </div>
+    <div class="sb-feedback" id="sb-feedback"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ QUIZ ══════════════════════ -->
+<div class="screen" id="quiz">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="game-title">📝 Lesson Quiz</span>
+    <div class="progress-bar"><div class="progress-fill" id="qz-progress"></div></div>
+    <div class="score-badge" id="qz-score-badge">0分</div>
+  </div>
+  <div class="game-body">
+    <div class="quiz-round-badge" id="qz-round"></div>
+    <div class="quiz-q" id="qz-q"></div>
+    <div class="quiz-opts" id="qz-opts"></div>
+    <button class="quiz-next" id="qz-next" onclick="qzNext()">下一題 →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════ RESULT ══════════════════════ -->
+<div class="screen" id="result">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="game-title">結果</span>
+  </div>
+  <div class="result-screen">
+    <div class="result-circle">
+      <div class="result-score" id="res-score"></div>
+      <div class="result-total" id="res-total"></div>
+    </div>
+    <div class="result-msg" id="res-msg"></div>
+    <div class="result-sub" id="res-sub"></div>
+    <div class="result-btns">
+      <button class="result-retry" id="res-retry">再玩一次</button>
+      <button class="result-home" onclick="goHome()">回首頁</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════
+// DATA
+// ════════════════════════════════
+const vocab = [
+  {char:'喜歡',pinyin:'xǐ huān',meaning:'好き・好む',example:'我喜歡咖啡。'},
+  {char:'愛',pinyin:'ài',meaning:'愛する・大好き',example:'她愛小貓。'},
+  {char:'小狗',pinyin:'xiǎo gǒu',meaning:'子犬・小型犬',example:'你喜歡小狗嗎？'},
+  {char:'小貓',pinyin:'xiǎo māo',meaning:'子猫・猫',example:'他愛小貓。'},
+  {char:'拉麵',pinyin:'lā miàn',meaning:'ラーメン',example:'我喜歡吃拉麵。'},
+  {char:'咖啡',pinyin:'kā fēi',meaning:'コーヒー',example:'我喜歡咖啡，你呢？'},
+  {char:'旅行',pinyin:'lǚ xíng',meaning:'旅行する',example:'我們都喜歡旅行。'},
+  {char:'跑步',pinyin:'pǎo bù',meaning:'ジョギング・走る',example:'她喜歡跑步。'},
+  {char:'照相',pinyin:'zhào xiàng',meaning:'写真を撮る',example:'你喜歡照相嗎？'},
+  {char:'看電影',pinyin:'kàn diàn yǐng',meaning:'映画を見る',example:'我喜歡看電影。'},
+  {char:'不好意思',pinyin:'bù hǎo yì si',meaning:'すみません・恐れ入ります',example:'不好意思，麻煩你了。'},
+  {char:'謝謝',pinyin:'xiè xie',meaning:'ありがとう',example:'謝謝！不會哦！'},
+  {char:'老師',pinyin:'lǎo shī',meaning:'先生・教師',example:'你好，○老師！'},
+  {char:'校長',pinyin:'xiào zhǎng',meaning:'校長',example:'早安，校長！'},
+  {char:'辛苦了',pinyin:'xīn kǔ le',meaning:'お疲れ様でした',example:'辛苦了！—辛苦了！'},
+];
+
+const sentences = [
+  {prompt:'日本語ヒント：私もコーヒーが好きです。',tokens:['我','也','喜歡','咖啡','。'],answer:'我也喜歡咖啡。'},
+  {prompt:'日本語ヒント：あなたは犬が好きですか？',tokens:['你','喜歡','小狗','嗎','？'],answer:'你喜歡小狗嗎？'},
+  {prompt:'日本語ヒント：私たちはみんな旅行が好きです。',tokens:['我們','都','喜歡','旅行','。'],answer:'我們都喜歡旅行。'},
+  {prompt:'日本語ヒント：私はコーヒーが好きです。あなたは？',tokens:['我','喜歡','咖啡','，','你呢','？'],answer:'我喜歡咖啡，你呢？'},
+  {prompt:'日本語ヒント：あなたは何が好きですか？',tokens:['你','喜歡','什麼','？'],answer:'你喜歡什麼？'},
+  {prompt:'日本語ヒント：彼女はジョギングが好きではありません。',tokens:['她','不','喜歡','跑步','。'],answer:'她不喜歡跑步。'},
+];
+
+const quizQs = [
+  {round:'禮貌用語',q:'別人說「謝謝！」，你怎麼回應？',opts:['請多多指教！','不會哦！','辛苦了！','麻煩你了！'],ans:1},
+  {round:'禮貌用語',q:'你不小心麻煩別人，應該說什麼？',opts:['謝謝你哦！','你太客氣了！','不好意思','辛苦了！'],ans:2},
+  {round:'禮貌用語',q:'「辛苦了！」的回應是？',opts:['你太客氣了！','辛苦了！/ 不會。','不好意思！','謝謝！'],ans:1},
+  {round:'稱呼',q:'服務業詢問對方姓氏，應該說？',opts:['你叫什麼名字？','請問您貴姓？','你是做什麼的？','你怎麼稱呼？'],ans:1},
+  {round:'稱呼',q:'最常用的詢問稱呼方式是？',opts:['你叫什麼名字？','請問您貴姓？','你/您怎麼稱呼？','你是做什麼的？'],ans:2},
+  {round:'興趣',q:'「lǚ xíng」是哪個詞？',opts:['旅行','跑步','照相','看電影'],ans:0},
+  {round:'興趣',q:'「zhào xiàng」的意思是？',opts:['看電影','旅行','照相','跑步'],ans:2},
+  {round:'句型',q:'「也」用在哪個句型？',opts:['是非疑問句','省略式問句','也/都句型','疑問詞問句'],ans:2},
+  {round:'句型',q:'「你喜歡咖啡嗎？」→ 否定回答是？',opts:['不喜歡','沒有喜歡','不是喜歡','喜歡不'],ans:0},
+  {round:'句型',q:'「我喜歡咖啡，你呢？」中「呢」的作用？',opts:['是非問句','省略式問句','否定句','感嘆句'],ans:1},
+];
+
+// ════════════════════════════════
+// HELPERS
+// ════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome(){showScreen('home')}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+
+// ════════════════════════════════
+// FLASHCARDS
+// ════════════════════════════════
+let fcIdx=0;
+function startFlashcards(){
+  fcIdx=0;
+  showScreen('flashcards');
+  renderFC();
+}
+function renderFC(){
+  const v=vocab[fcIdx];
+  document.getElementById('fc-char').textContent=v.char;
+  document.getElementById('fc-pinyin').textContent=v.pinyin;
+  document.getElementById('fc-meaning').textContent=v.meaning;
+  document.getElementById('fc-example').textContent=v.example;
+  document.getElementById('fc-counter').textContent=`${fcIdx+1} / ${vocab.length}`;
+  document.getElementById('fc-progress').style.width=`${(fcIdx+1)/vocab.length*100}%`;
+  const card=document.getElementById('fc-card');
+  card.classList.remove('flipped');
+  card.classList.add('pop');
+  setTimeout(()=>card.classList.remove('pop'),300);
+}
+function flipCard(){document.getElementById('fc-card').classList.toggle('flipped')}
+function fcNext(){if(fcIdx<vocab.length-1){fcIdx++;renderFC()}}
+function fcPrev(){if(fcIdx>0){fcIdx--;renderFC()}}
+
+// ════════════════════════════════
+// MEMORY MATCH
+// ════════════════════════════════
+let mmFlipped=[],mmMatched=0,mmMoves=0,mmTimer=0,mmInterval=null,mmLocked=false;
+const mmPairs=[
+  {a:'喜歡',b:'xǐ huān'},{a:'咖啡',b:'kā fēi'},
+  {a:'旅行',b:'lǚ xíng'},{a:'照相',b:'zhào xiàng'},
+  {a:'小狗',b:'xiǎo gǒu'},{a:'老師',b:'lǎo shī'},
+  {a:'謝謝',b:'xiè xie'},{a:'辛苦了',b:'xīn kǔ le'},
+];
+function startMemory(){
+  mmFlipped=[];mmMatched=0;mmMoves=0;mmTimer=0;mmLocked=false;
+  clearInterval(mmInterval);
+  showScreen('memory');
+  const tiles=[];
+  mmPairs.forEach((p,i)=>{
+    tiles.push({id:i,side:'a',text:p.a});
+    tiles.push({id:i,side:'b',text:p.b});
+  });
+  const shuffled=shuffle(tiles);
+  const grid=document.getElementById('mm-grid');
+  grid.innerHTML='';
+  shuffled.forEach((t,idx)=>{
+    const div=document.createElement('div');
+    div.className='mm-tile';
+    div.dataset.id=t.id;div.dataset.idx=idx;
+    div.innerHTML=`<div class="mm-tile-inner">${t.text}</div>`;
+    div.onclick=()=>mmClick(div,t);
+    grid.appendChild(div);
+  });
+  mmInterval=setInterval(()=>{
+    mmTimer++;
+    document.getElementById('mm-timer').textContent=`⏱ ${mmTimer}s`;
+  },1000);
+  mmUpdateStats();
+}
+function mmClick(div,t){
+  if(mmLocked||div.classList.contains('matched')||div.classList.contains('revealed')) return;
+  div.classList.add('revealed');
+  mmFlipped.push({div,t});
+  if(mmFlipped.length===2){
+    mmMoves++;
+    mmLocked=true;
+    const [a,b]=mmFlipped;
+    if(a.t.id===b.t.id&&a.t.side!==b.t.side){
+      a.div.classList.add('matched');b.div.classList.add('matched');
+      mmMatched++;mmFlipped=[];mmLocked=false;
+      mmUpdateStats();
+      if(mmMatched===mmPairs.length){
+        clearInterval(mmInterval);
+        setTimeout(()=>showResult('memory',mmPairs.length,mmPairs.length,`用了 ${mmMoves} 步，${mmTimer} 秒完成！`),400);
+      }
+    } else {
+      a.div.classList.add('wrong');b.div.classList.add('wrong');
+      setTimeout(()=>{
+        a.div.classList.remove('revealed','wrong');
+        b.div.classList.remove('revealed','wrong');
+        mmFlipped=[];mmLocked=false;
+      },800);
+    }
+    mmUpdateStats();
+  }
+}
+function mmUpdateStats(){
+  document.getElementById('mm-pairs').textContent=`配對：${mmMatched} / ${mmPairs.length}`;
+  document.getElementById('mm-moves').textContent=`步數：${mmMoves}`;
+  document.getElementById('mm-score-badge').textContent=`${mmMatched} 配對`;
+}
+
+// ════════════════════════════════
+// SENTENCE BUILDER
+// ════════════════════════════════
+let sbIdx=0,sbScore=0,sbAnswered=false,sbSelected=[],sbCurrent=null;
+function startSentence(){
+  sbIdx=0;sbScore=0;
+  showScreen('sentence');
+  renderSB();
+}
+function renderSB(){
+  if(sbIdx>=sentences.length){showResult('sentence',sbScore,sentences.length,'句子全部完成！');return}
+  sbAnswered=false;sbSelected=[];
+  sbCurrent=sentences[sbIdx];
+  document.getElementById('sb-q-num').textContent=`第 ${sbIdx+1} 題 / 共 ${sentences.length} 題`;
+  document.getElementById('sb-prompt').innerHTML=`<strong>提示：</strong>${sbCurrent.prompt}`;
+  document.getElementById('sb-score-badge').textContent=`${sbScore} / ${sbIdx}`;
+  const fb=document.getElementById('sb-feedback');
+  fb.style.display='none';fb.className='sb-feedback';
+  // shuffle tokens
+  const shuffled=shuffle(sbCurrent.tokens);
+  const bank=document.getElementById('sb-bank');
+  bank.innerHTML='';
+  shuffled.forEach((tok,i)=>{
+    const btn=document.createElement('button');
+    btn.className='sb-bank-token';btn.dataset.idx=i;btn.dataset.tok=tok;
+    btn.textContent=tok;
+    btn.onclick=()=>sbPickToken(btn,tok,i);
+    bank.appendChild(btn);
+  });
+  document.getElementById('sb-answer').innerHTML='';
+  document.getElementById('sb-answer').className='sb-answer-area';
+}
+function sbPickToken(btn,tok,idx){
+  if(sbAnswered) return;
+  btn.classList.add('used');
+  sbSelected.push({tok,idx});
+  const area=document.getElementById('sb-answer');
+  area.classList.add('has-content');
+  const span=document.createElement('span');
+  span.className='sb-token pop';span.textContent=tok;
+  span.onclick=()=>{
+    sbSelected=sbSelected.filter(s=>s.idx!==idx);
+    btn.classList.remove('used');
+    span.remove();
+    if(sbSelected.length===0) area.classList.remove('has-content');
+  };
+  area.appendChild(span);
+}
+function sbClear(){
+  sbSelected=[];
+  document.getElementById('sb-answer').innerHTML='';
+  document.getElementById('sb-answer').className='sb-answer-area';
+  document.querySelectorAll('.sb-bank-token').forEach(b=>b.classList.remove('used'));
+}
+function sbCheck(){
+  if(sbAnswered||sbSelected.length===0) return;
+  sbAnswered=true;
+  const ans=sbSelected.map(s=>s.tok).join('');
+  const fb=document.getElementById('sb-feedback');
+  fb.style.display='block';
+  if(ans===sbCurrent.answer){
+    sbScore++;
+    fb.className='sb-feedback correct';
+    fb.innerHTML='✓ 正確！'+`<br><small>${sbCurrent.answer}</small>`;
+  } else {
+    fb.className='sb-feedback wrong';
+    fb.innerHTML=`✗ 再想想！正確答案：<br><strong>${sbCurrent.answer}</strong>`;
+  }
+  setTimeout(()=>{sbIdx++;renderSB();},1600);
+}
+
+// ════════════════════════════════
+// QUIZ
+// ════════════════════════════════
+let qzIdx=0,qzScore=0,qzAnswered=false,qzList=[];
+function startQuiz(){
+  qzIdx=0;qzScore=0;qzAnswered=false;
+  qzList=shuffle(quizQs);
+  showScreen('quiz');
+  renderQZ();
+}
+function renderQZ(){
+  if(qzIdx>=qzList.length){showResult('quiz',qzScore,qzList.length,'測驗完成！');return}
+  qzAnswered=false;
+  const q=qzList[qzIdx];
+  document.getElementById('qz-round').textContent=q.round;
+  document.getElementById('qz-q').textContent=`Q${qzIdx+1}. ${q.q}`;
+  document.getElementById('qz-progress').style.width=`${(qzIdx)/qzList.length*100}%`;
+  document.getElementById('qz-score-badge').textContent=`${qzScore}分`;
+  document.getElementById('qz-next').style.display='none';
+  const opts=document.getElementById('qz-opts');
+  opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-opt';btn.textContent=o;
+    btn.onclick=()=>qzAnswer(i,q.ans,btn);
+    opts.appendChild(btn);
+  });
+}
+function qzAnswer(chosen,correct,btn){
+  if(qzAnswered) return;
+  qzAnswered=true;
+  const btns=document.querySelectorAll('.quiz-opt');
+  btns.forEach(b=>b.disabled=true);
+  if(chosen===correct){qzScore++;btn.classList.add('correct')}
+  else{btn.classList.add('wrong');btns[correct].classList.add('correct')}
+  document.getElementById('qz-next').style.display='block';
+}
+function qzNext(){qzIdx++;renderQZ()}
+
+// ════════════════════════════════
+// RESULT
+// ════════════════════════════════
+let lastMode='';
+function showResult(mode,score,total,sub){
+  lastMode=mode;
+  const pct=Math.round(score/total*100);
+  const msg=pct>=80?'太棒了！🎉':pct>=60?'不錯哦！💪':'繼續加油！📖';
+  document.getElementById('res-score').textContent=score;
+  document.getElementById('res-total').textContent=`/ ${total}`;
+  document.getElementById('res-msg').textContent=msg;
+  document.getElementById('res-sub').textContent=sub||`正確率 ${pct}%`;
+  const retryMap={flashcards:startFlashcards,memory:startMemory,sentence:startSentence,quiz:startQuiz};
+  document.getElementById('res-retry').onclick=retryMap[mode];
+  showScreen('result');
+}
+</script>
+</body>
+</html>
